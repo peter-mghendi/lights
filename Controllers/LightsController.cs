@@ -20,12 +20,16 @@ namespace Lights.Controllers
         private const int Yellow = 24;
         private const int Green = 25;
 
+        private static readonly string _red = nameof(Red).ToLower();
+        private static readonly string _yellow = nameof(Yellow).ToLower();
+        private static readonly string _green = nameof(Green).ToLower();
+
         private readonly int[] _pins = new int[] { Red, Yellow, Green };
         private readonly Dictionary<string, int> _map = new ()
         { 
-            [nameof(Red).ToLower()] = Red, 
-            [nameof(Yellow).ToLower()] = Yellow, 
-            [nameof(Green).ToLower()] = Green 
+            [_red] = Red, 
+            [_yellow] = Yellow, 
+            [_green] = Green 
         };
 
         private readonly GpioController _controller;
@@ -41,26 +45,11 @@ namespace Lights.Controllers
                 _controller.OpenPin(pin, PinMode.Output);
                 // _controller.Write(pin, 0);
             }
-
-            _lightsService.Set(nameof(Red).ToLower(), false);
-            _lightsService.Set(nameof(Yellow).ToLower(), false);
-            _lightsService.Set(nameof(Green).ToLower(), false);
         }
 
         [HttpGet]
-        public Dictionary<string, bool> GetAll()
-        {
-            var red = nameof(Red).ToLower();
-            var yellow = nameof(Yellow).ToLower();
-            var green = nameof(Green).ToLower();
-
-            return new ()
-            {
-                [red] = _lightsService.Get(red).Value,
-                [yellow] = _lightsService.Get(yellow).Value,
-                [green] = _lightsService.Get(green).Value,
-            };
-        }
+        public Dictionary<string, bool> GetAll() =>
+            _lightsService.GetAll();
 
         [HttpGet("{key}")]
         public KeyValuePair<string, bool> Get(string key) => 
@@ -69,7 +58,6 @@ namespace Lights.Controllers
         [HttpPost("{key}")]
         public KeyValuePair<string, bool> Set(string key, [FromBody]StatusRequest request) 
         {
-            Console.WriteLine($"{key}: {request.Value}");
             var pin = _map[key];
             _controller.Write(pin, request.Value ? 1 : 0);
             _lightsService.Set(key, request.Value);

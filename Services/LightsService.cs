@@ -5,7 +5,13 @@ namespace Lights.Services
 {
     public class LightsService : ILightsService
     {
-        private readonly Dictionary<string, bool> _lights = new();
+        private readonly Dictionary<string, bool> _lights = new() 
+        {
+            ["red"] = false,
+            ["yellow"] = false,
+            ["green"] = false
+
+        };
 
         public KeyValuePair<string, bool> Get(string key) => _lights.SingleOrDefault(p => p.Key == key);
 
