@@ -39,7 +39,7 @@ namespace Lights.Controllers
             foreach (var pin in _pins)
             {
                 _controller.OpenPin(pin, PinMode.Output);
-                _controller.Write(pin, 0);
+                // _controller.Write(pin, 0);
             }
 
             _lightsService.Set(nameof(Red).ToLower(), false);
